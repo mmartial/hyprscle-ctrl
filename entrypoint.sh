@@ -17,18 +17,18 @@ if [ ! -x ${tool} ]; then
 fi
 
 # Prep a config file
-cfile="/etc/hyprspace/interface-hs0.yaml"
+cfile="/etc/hyprspace/hs0.yaml"
 if [ ! -f ${cfile} ]; then
-     init hs0
-    if [ -f ${cfile} ]; then
+    ${tool} init hs0
+    if [ ! -f ${cfile} ]; then
       echo "Failed to initialize"
       exit 1
     fi
-    awk '{sub(/10\.1\.1\.1/,"10.11.12.1")}1' ${cfile}
+    gawk -i inplace '{ gsub(/10\.1\.1\.1/,"10.11.12.1") }; { print }' ${cfile}
 fi
 
 # Start it
-$tool up hs0 &
+#$tool up hs0 &
 
 # Configure iptables for 10.11.12.x
 # [...]
