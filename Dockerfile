@@ -1,0 +1,12 @@
+FROM alpine:latest
+RUN apk add --no-cache bash curl iptables iproute2 awk
+
+ARG RELEASE="https://github.com/hyprspace/hyprspace/releases/download/v0.2.2/hyprspace-v0.2.2-linux-amd64"
+RUN mkdir -p /usr/local/bin/ \
+  && curl -L ${RELEASE} -o /usr/local/bin/hyprspace \
+  && chmod a+x /usr/local/bin/hyprspace \
+  && ln -s /usr/local/bin/hyprspace /usr/bin/hyprspace
+
+COPY entrypoint.sh /app
+ENTRYPOINT ["/app/entrypoint.sh"]
+
