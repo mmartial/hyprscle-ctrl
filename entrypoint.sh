@@ -17,14 +17,19 @@ if [ ! -x ${tool} ]; then
 fi
 
 # Prep a config file
-cfile="/etc/hyprspace/hs0.yaml"
+cfile="/etc/hyprspace/hs.yaml"
+rfile="/app/config.yml"
 if [ ! -f ${cfile} ]; then
-    ${tool} init hs0
+    ${tool} init hs
     if [ ! -f ${cfile} ]; then
       echo "Failed to initialize"
       exit 1
     fi
-    gawk -i inplace '{ gsub(/10\.1\.1\.1/,"10.11.12.1") }; { print }' ${cfile}
+    if [ -f ${rfile} ]; then
+      cp ${cfile} /tmp/hs.yaml
+      perl /app/repl.pl ${rfile} ${cfile} | tee /tmp/hs.yaml.mod
+      cp /tmp/hs.yaml.mod ${cfile}
+    fi
 fi
 
 # Start it
